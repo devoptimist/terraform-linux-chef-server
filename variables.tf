@@ -46,7 +46,7 @@ variable "tmp_path" {
 ############ policyfile_module ##################
 variable "cookbooks" {
   default = {
-    "chef_server_wrapper" = "github: 'devoptimist/chef_server_wrapper', tag: 'v0.1.45'",
+    "chef_server_wrapper" = "github: 'devoptimist/chef_server_wrapper', tag: 'v0.1.46'",
     "chef-ingredient" = "github: 'chef-cookbooks/chef-ingredient', tag: 'v3.1.1'"
   }
 }
