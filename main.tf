@@ -48,7 +48,8 @@ locals {
 }
 
 module "chef_server_build" {
-  source            = "/home/steveb/workspace/terraform/modules/devoptimist/terraform-chef-policyfile"
+  source            = "devoptimist/policyfile/chef"
+  version           = "0.0.2"
   ips               = var.ips
   instance_count    = local.instance_count
   dna               = local.dna
