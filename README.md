@@ -1,6 +1,5 @@
 # Overview
-This terraform module will ssh into a linux instance and deploy
-a chef server.
+This terraform module will deploy chef server to one or more servers
 Supported platform families:
  * Debian
  * SLES
@@ -11,12 +10,12 @@ Supported platform families:
 ```hcl
 
 module "chef_server" {
-  source                      = "devoptimist/chef-server/linux"
-  version                     = "0.1.0"
-  ips                         = ["172.16.0.23"]
-  instance_count              = 1
-  system_user_name            = "ec2-user"
-  system_user_private_ssh_key = "~/.ssh/id_rsa"
+  source               = "devoptimist/chef-server/linux"
+  version              = "0.0.1"
+  ips                  = ["172.16.0.23"]
+  instance_count       = 1
+  ssh_user_name        = "ec2-user"
+  ssh_user_private_key = "~/.ssh/id_rsa"
 }
 ```
 
@@ -26,10 +25,10 @@ module "chef_server" {
 |------|-------------|------|---------|----------|
 |ips|A list of ip addresses where the chef server will be installed|list|[]|no|
 |instance_count|The number of instances being created| integer |0|no|
-|system_user_name|The ssh user name used to access the ip addresses provided|string||yes|
-|system_user_pass|The ssh user password used to access the ip addresses|string|""|no|
-|system_user_private_ssh_key|The ssh user key used to access the ip addresses|string|""|no|
-|channel|The chef install channel to use for the chef server package|string|stable|no|
+|ssh_user_name|The ssh user name used to access the ip addresses provided|string||yes|
+|ssh_user_pass|The ssh user password used to access the ip addresses|string|""|no|
+|ssh_user_private_ssh_key|The ssh user key used to access the ip addresses|string|""|no|
+|channel|The install channel to use for the chef server package|string|stable|no|
 |install_version|The version of chef server to install|string|12.19.31|no|
 |accept_license|Shall we accept the chef product license|boolean|true|no|
 |data_collector_url|The url to a data collector (automate) end point|string|""|no|
@@ -38,9 +37,13 @@ module "chef_server" {
 |config_block|Extra config passed in the form of a map (used for chef ha cluster)|map|{}|no|
 |addons|Any addons to be installed should be included in this map|map|{}|no|
 |supermarket_url|Use this to configure the chef server to talk to a supermarket instance|string|""|no|
+|fqdns|A list of fully qualified host names to apply to each chef server being created|list|[]|no|
+|certs|A list of ssl certificates to apply to each chef server|list|[]|no|
+|cert_keys|A list of ssl private keys to apply to each chef server|list|[]|no|
 |users|A map of users to be added to the chef server and their details|map|{}|no|
 |orgs|A map of organisations to be added to the chef server|map|{}|no|
-|starter_pack_dest|The location to download the starter pack to |string|/tmp/chef-starter-pack.tar.gz|no|
+|frontend_secrets|A list of secrets to apply to each frontend; for use in a HA cluster|list|[]|no|
+|force_run|Set to anything other than default to force a rerun of provisioning on all chef servers|string|default|no|
 
 ## Map Variable examples
 

@@ -1,147 +1,172 @@
 ################## connection #####################
 variable "ips" {
-  type    = list
-  default = []
+  description = "A list of ip addresses where the chef server will be installed"
+  type        = list
+  default     = []
 }
 
 variable "instance_count" {
-  default = 0
+  description = "The number of instances being created"
+  type        = number
+  default     = 0
 }
 
 variable "ssh_user_name" {
-  type    = "string"
+  description = "The ssh user name used to access the ip addresses provided" 
+  type        = string
 }
 
 variable "ssh_user_pass" {
-  type    = "string"
-  default = ""
+  description = "The ssh user password used to access the ip addresses"
+  type        = string
+  default     = ""
 }
 
 variable "ssh_user_private_key" {
-  type    = "string"
-  default = ""
+  description = "The ssh user key used to access the ip addresses"
+  type        = "string"
+  default     = ""
 }
+
 #################### starter pack #################
 
 variable "starter_pack_knife_rb_path" {
-  type    = string
-  default = "/var/tmp/knife.rb"
+  description = "Internal value for creating a knife.rb"
+  type        = string
+  default     = "/var/tmp/knife.rb"
 }
 
 variable "starter_pack_location" {
-  type    = string
-  default = "/var/tmp/chef-starter-pack.tar.gz"
-}
-
-variable "starter_pack_dest" {
-  type    = string
-  default = "/var/tmp/chef-starter-pack.tar.gz"
+  description = "Internal value for creating a starter pack"
+  type        = string
+  default     = "/var/tmp/chef-starter-pack.tar.gz"
 }
 
 variable "tmp_path" {
-  type    = string
-  default = "/var/tmp"
+  description = "A path to use for installation scripts"
+  type        = string
+  default     = "/var/tmp"
 }
 
 ############ policyfile_module ##################
 variable "cookbooks" {
-  default = {
+  description = "the cookbooks used to deploy chef server"
+  default     = {
     "chef_server_wrapper" = "github: 'devoptimist/chef_server_wrapper', tag: 'v0.1.46'",
-    "chef-ingredient" = "github: 'chef-cookbooks/chef-ingredient', tag: 'v3.1.1'"
+    "chef-ingredient"     = "github: 'chef-cookbooks/chef-ingredient', tag: 'v3.1.1'"
   }
 }
 
 variable "runlist" {
-  type    = list
-  default = ["chef_server_wrapper::default"]
+  description = "The chef run list used to deploy chef server"
+  type        = list
+  default     = ["chef_server_wrapper::default"]
 }
 
 ################ attribute json ##################
 variable "channel" {
-  type    = string
-  default = "stable"
+  description = "The install channel to use for the chef server"
+  type        = string
+  default     = "stable"
 }
 
 variable "install_version" {
+  description = "The version of chef server to install"
   type    = string
   default = "13.0.17"
 }
 
 variable "accept_license" {
+  description = "Shall we accept the chef product license"
   default = true
 }
 
 variable "data_collector_url" {
-  type    = list(string)
-  default = []
+  description = "The url to a data collector (automate) end point"
+  type        = list(string)
+  default     = []
 }
 
 variable "data_collector_token" {
-  type    = list(string)
-  default = []
+  description = "The token used to access the data collector end point"
+  type        = list(string)
+  default     = []
 }
 
 variable "config" {
-  type    = string
-  default = ""
+  description = "Extra config to be passed to a chef server"
+  type        = string
+  default     = ""
 }
 
 variable "config_block" {
-  type    = map
-  default = {}
+  description = "Extra config passed in the form of a map (used for chef ha cluster)"
+  type        = map
+  default     = {}
 }
 
 variable "addons" {
-  type    = map
-  default = {}
+  description = "Any addons to be installed should be included in this map"
+  type        = map
+  default     = {}
 }
 
 variable "supermarket_url" {
-  type    = list(string)
-  default = []
+  description = "Use this to configure the chef server to talk to a supermarket instance"
+  type        = list(string)
+  default     = []
 }
 
 variable "fqdns" {
-  type    = list(string)
-  default = []
+  description = "A list of fully qualified host names to apply to each chef server being created"
+  type        = list(string)
+  default     = []
 }
 
 variable "certs" {
-  type    = list(string)
-  default = []
+  description = "A list of ssl certificates to apply to each chef server"
+  type        = list(string)
+  default     = []
 }
 
 variable "cert_keys" {
-  type    = list(string)
-  default = []
+  description = "A list of ssl private keys to apply to each chef server"
+  type        = list(string)
+  default     = []
 }
 
 variable "users" {
-  type    = map(object({ serveradmin=bool, first_name=string, last_name=string, email=string, password=string }))
-  default = {}
+  description = "A map of users to be added to the chef server and their details"
+  type        = map(object({ serveradmin=bool, first_name=string, last_name=string, email=string, password=string }))
+  default     = {}
 }
 
 variable "orgs" {
-  type    = map(object({ admins=list(string), org_full_name=string }))
-  default = {}
+  description = "A map of organisations to be added to the chef server"
+  type        = map(object({ admins=list(string), org_full_name=string }))
+  default     = {}
 }
 
 variable "data_source_script_path" {
-  type    = string
-  default = "/var/tmp/chef_server_details.sh"
+  description = "The location data source script used to gather chef server details"
+  type        = string
+  default     = "/var/tmp/chef_server_details.sh"
 }
 
 variable "frontend_script_path" {
-  type    = string
-  default = "/var/tmp/frontend_secrets.sh"
+  description = "The location data source script used to gather frontend secrets from a bootstrapped frontend"
+  type        = string
+  default     = "/var/tmp/frontend_secrets.sh"
 }
 
 variable "frontend_secrets" {
-  type    = list
-  default = []
+  description = "A list of secrets to apply to each frontend; for use in a HA cluster"
+  type        = list
+  default     = []
 }
 
 variable "force_run" {
-  type    = string
-  default = "default"
+  description = "Set to anything other than default to force a rerun of provisioning on all servers"
+  type        = string
+  default     = "default"
 }
