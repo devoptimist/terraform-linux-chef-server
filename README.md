@@ -26,8 +26,8 @@ module "chef_server" {
 |ips|A list of ip addresses where the chef server will be installed|list|[]|no|
 |instance_count|The number of instances being created| integer |0|no|
 |ssh_user_name|The ssh user name used to access the ip addresses provided|string||yes|
-|ssh_user_pass|The ssh user password used to access the ip addresses|string|""|no|
-|ssh_user_private_ssh_key|The ssh user key used to access the ip addresses|string|""|no|
+|ssh_user_pass|The ssh user password used to access the ip addresses (either ssh_user_pass or ssh_user_private_key needs to be set)|string|""|no|
+|ssh_user_private_key|The ssh user key used to access the ip addresses (either ssh_user_pass or ssh_user_private_key needs to be set)|string|""|no|
 |channel|The install channel to use for the chef server package|string|stable|no|
 |install_version|The version of chef server to install|string|12.19.31|no|
 |accept_license|Shall we accept the chef product license|boolean|true|no|

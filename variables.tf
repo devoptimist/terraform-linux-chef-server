@@ -2,13 +2,11 @@
 variable "ips" {
   description = "A list of ip addresses where the chef server will be installed"
   type        = list
-  default     = []
 }
 
 variable "instance_count" {
   description = "The number of instances being created"
   type        = number
-  default     = 0
 }
 
 variable "ssh_user_name" {
@@ -17,13 +15,13 @@ variable "ssh_user_name" {
 }
 
 variable "ssh_user_pass" {
-  description = "The ssh user password used to access the ip addresses"
+  description = "The ssh user password used to access the ip addresses (either ssh_user_pass or ssh_user_private_key needs to be set)"
   type        = string
   default     = ""
 }
 
 variable "ssh_user_private_key" {
-  description = "The ssh user key used to access the ip addresses"
+  description = "The ssh user key used to access the ip addresses (either ssh_user_pass or ssh_user_private_key needs to be set)"
   type        = "string"
   default     = ""
 }

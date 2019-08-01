@@ -49,7 +49,7 @@ locals {
 
 module "chef_server_build" {
   source            = "devoptimist/policyfile/chef"
-  version           = "0.0.2"
+  version           = "0.0.3"
   ips               = var.ips
   instance_count    = local.instance_count
   dna               = local.dna
