@@ -70,13 +70,14 @@ variable "channel" {
 
 variable "install_version" {
   description = "The version of chef server to install"
-  type    = string
-  default = "13.0.17"
+  type        = string
+  default     = "13.0.17"
 }
 
 variable "accept_license" {
   description = "Shall we accept the chef product license"
-  default = true
+  type        = bool
+  default     = true
 }
 
 variable "data_collector_url" {

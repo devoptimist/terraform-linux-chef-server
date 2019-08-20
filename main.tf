@@ -49,7 +49,7 @@ locals {
 
 module "chef_server_build" {
   source            = "devoptimist/policyfile/chef"
-  version           = "0.0.3"
+  version           = "0.0.4"
   ips               = var.ips
   instance_count    = local.instance_count
   dna               = local.dna
@@ -80,6 +80,7 @@ resource "null_resource" "starter_pack" {
   connection {
     user        = var.ssh_user_name
     password    = var.ssh_user_pass
+    private_key = var.ssh_user_private_key != "" ? file(var.ssh_user_private_key) : null
     host        = var.ips[count.index]
   }
 
