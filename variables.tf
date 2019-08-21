@@ -61,6 +61,12 @@ variable "runlist" {
   default     = ["chef_server_wrapper::default"]
 }
 
+variable "policyfile_name" {
+  description = "The name to give the resulting policy file"
+  type        = string
+  default     = "chef_server"
+}
+
 ################ attribute json ##################
 variable "channel" {
   description = "The install channel to use for the chef server"

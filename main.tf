@@ -49,7 +49,7 @@ locals {
 
 module "chef_server_build" {
   source            = "devoptimist/policyfile/chef"
-  version           = "0.0.4"
+  version           = "0.0.5"
   ips               = var.ips
   instance_count    = local.instance_count
   dna               = local.dna
@@ -59,6 +59,7 @@ module "chef_server_build" {
   user_name         = var.ssh_user_name
   user_pass         = var.ssh_user_pass
   user_private_key  = var.ssh_user_private_key
+  policyfile_name   = var.policyfile_name
 }
 
 data "external" "supermarket_details" {
