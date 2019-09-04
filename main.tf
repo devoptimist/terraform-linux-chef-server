@@ -84,7 +84,7 @@ resource "null_resource" "starter_pack" {
     password    = var.ssh_user_pass
     private_key = var.ssh_user_private_key != "" ? file(var.ssh_user_private_key) : null
     host        = var.ips[count.index]
-    timeout     = var.connection_timeout
+    timeout     = var.timeout
   }
 
   provisioner "file" {
