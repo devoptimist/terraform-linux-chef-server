@@ -12,6 +12,6 @@ else
     echo "must install sshpass"
     exit 1
   else
-    sshpass -p ${ssh_pass} ssh ${ssh_user}@${target_script} "sudo bash ${target_script}"
+    sshpass -p ${ssh_pass} ssh ${ssh_user}@${target_ip} "sudo bash ${target_script}"
   fi
 fi
