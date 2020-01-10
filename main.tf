@@ -48,7 +48,7 @@ locals {
 }
 
 module "chef_server_build" {
-  source            = "devoptimist/policyfile/chef"
+  source            = "srb3/policyfile/chef"
   version           = "0.0.8"
   ips               = var.ips
   instance_count    = local.instance_count

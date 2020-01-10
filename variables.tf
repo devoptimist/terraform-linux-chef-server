@@ -56,7 +56,7 @@ variable "tmp_path" {
 variable "cookbooks" {
   description = "the cookbooks used to deploy chef server"
   default     = {
-    "chef_server_wrapper" = "github: 'devoptimist/chef_server_wrapper', tag: 'v0.1.46'",
+    "chef_server_wrapper" = "github: 'srb3/chef_server_wrapper', tag: 'v0.1.46'",
     "chef-ingredient"     = "github: 'chef-cookbooks/chef-ingredient', tag: 'v3.1.1'"
   }
 }
