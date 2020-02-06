@@ -22,7 +22,7 @@ variable "ssh_user_pass" {
 
 variable "ssh_user_private_key" {
   description = "The ssh user key used to access the ip addresses (either ssh_user_pass or ssh_user_private_key needs to be set)"
-  type        = "string"
+  type        = string
   default     = ""
 }
 
@@ -74,6 +74,10 @@ variable "policyfile_name" {
 }
 
 ################ attribute json ##################
+variable "automate_module" {
+  description = "The module output of the chef automate modeule "
+}
+
 variable "channel" {
   description = "The install channel to use for the chef server"
   type        = string

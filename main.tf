@@ -9,6 +9,10 @@ locals {
     ssh_user_name              = var.ssh_user_name,
     starter_pack_location      = var.starter_pack_location
   })
+  code = var.automate_module != "" ? var.automate_module : jsonencode({"data_collector_url" = var.data_collector_url, "data_collector_token" = var.data_collector_token})
+
+  data_collector_url = jsondecode(local.code)["data_collector_url"]
+  data_collector_token = jsondecode(local.code)["data_collector_token"]
 
   dna = [
     for ip in var.ips :
@@ -38,8 +42,8 @@ locals {
     for ip in var.ips :
     {
       "chef_server_wrapper" = {
-        "data_collector_url"   = length(var.data_collector_url) != 0 ? var.data_collector_url[index(var.ips, ip)] : "",
-        "data_collector_token" = length(var.data_collector_token) != 0 ? var.data_collector_token[index(var.ips, ip)] : "",
+        "data_collector_url"   = length(local.data_collector_url) != 0 ? local.data_collector_url[index(var.ips, ip)] : "",
+        "data_collector_token" = length(local.data_collector_token) != 0 ? local.data_collector_token[index(var.ips, ip)] : "",
         "config_block"         = length(keys(var.config_block)) != 0 ? var.config_block : {},
         "frontend_secrets"     = length(var.frontend_secrets) != 0 ? element(var.frontend_secrets, 0) : null
       }
