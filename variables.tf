@@ -76,6 +76,8 @@ variable "policyfile_name" {
 ################ attribute json ##################
 variable "automate_module" {
   description = "The module output of the chef automate modeule "
+  type        = string
+  default     = ""
 }
 
 variable "channel" {
