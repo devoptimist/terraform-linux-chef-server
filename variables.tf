@@ -1,12 +1,7 @@
 ################## connection #####################
-variable "ips" {
-  description = "A list of ip addresses where the chef server will be installed"
-  type        = list
-}
-
-variable "instance_count" {
-  description = "The number of instances being created"
-  type        = number
+variable "ip" {
+  description = "The ip address where the chef server will be installed"
+  type        = string
 }
 
 variable "ssh_user_name" {
@@ -53,6 +48,7 @@ variable "tmp_path" {
 }
 
 ############ policyfile_module ##################
+
 variable "cookbooks" {
   description = "the cookbooks used to deploy chef server"
   default     = {
@@ -74,6 +70,7 @@ variable "policyfile_name" {
 }
 
 ################ attribute json ##################
+
 variable "automate_module" {
   description = "The module output of the chef automate modeule "
   type        = string
@@ -100,14 +97,14 @@ variable "accept_license" {
 
 variable "data_collector_url" {
   description = "The url to a data collector (automate) end point"
-  type        = list(string)
-  default     = []
+  type        = string
+  default     = ""
 }
 
 variable "data_collector_token" {
   description = "The token used to access the data collector end point"
-  type        = list(string)
-  default     = []
+  type        = string
+  default     = ""
 }
 
 variable "config" {
@@ -130,26 +127,26 @@ variable "addons" {
 
 variable "supermarket_url" {
   description = "Use this to configure the chef server to talk to a supermarket instance"
-  type        = list(string)
-  default     = []
+  type        = string
+  default     = ""
 }
 
-variable "fqdns" {
-  description = "A list of fully qualified host names to apply to each chef server being created"
-  type        = list(string)
-  default     = []
+variable "fqdn" {
+  description = "A fully qualified host name to apply to the chef server being created"
+  type        = string
+  default     = ""
 }
 
-variable "certs" {
-  description = "A list of ssl certificates to apply to each chef server"
-  type        = list(string)
-  default     = []
+variable "cert" {
+  description = "An ssl certificates to apply to the chef server"
+  type        = string
+  default     = ""
 }
 
-variable "cert_keys" {
-  description = "A list of ssl private keys to apply to each chef server"
-  type        = list(string)
-  default     = []
+variable "cert_key" {
+  description = "An ssl private key to apply to each chef server"
+  type        = string
+  default     = ""
 }
 
 variable "users" {
