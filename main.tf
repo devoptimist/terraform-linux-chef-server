@@ -56,7 +56,7 @@ module "chef_server_build" {
 
 data "external" "supermarket_details" {
   program = ["bash", "${path.module}/files/supermarket_data_source.sh"]
-  depends_on = ["module.chef_server_build"]
+  depends_on = [module.chef_server_build]
 
   query = {
     ssh_user              = var.ssh_user_name
@@ -87,12 +87,12 @@ resource "null_resource" "starter_pack" {
       "sudo bash ${var.tmp_path}/starter_kit.sh"
     ]
   }
-  depends_on = ["module.chef_server_build"]
+  depends_on = [module.chef_server_build]
 }
 
 data "external" "chef_server_details" {
   program = ["bash", "${path.module}/files/data_source.sh"]
-  depends_on = ["module.chef_server_build"]
+  depends_on = [module.chef_server_build]
 
   query = {
     ssh_user      = var.ssh_user_name
@@ -105,7 +105,7 @@ data "external" "chef_server_details" {
 
 data "external" "frontend_secret_output" {
   program = ["bash", "${path.module}/files/data_source.sh"]
-  depends_on = ["module.chef_server_build"]
+  depends_on = [module.chef_server_build]
 
   query = {
     ssh_user      = var.ssh_user_name
