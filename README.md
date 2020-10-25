@@ -48,7 +48,7 @@ module "chef_automate_install" {
 
 module "chef_server_install" {
   source               = "srb3/chef-server/linux"
-  version              = "0.13.4"
+  version              = "0.13.5"
   ip                   = module.instance["chef"].public_ip[0]
   ssh_user_name        = module.ami.user
   ssh_user_private_key = var.chef_server_ssh_user_private_key

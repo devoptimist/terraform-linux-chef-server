@@ -165,6 +165,12 @@ variable "force_run" {
   default     = "default"
 }
 
+variable "tmp_path" {
+  description = "The file path to use for staging install scripts and artifacts"
+  type        = string
+  default     = "/var/tmp"
+}
+
 ############ consul settings #####################
 
 variable "consul_datacenter" {
