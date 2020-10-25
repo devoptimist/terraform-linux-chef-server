@@ -8,7 +8,7 @@ locals {
 
   consul_populate_script = templatefile("${path.module}/templates/consul_populate_script", {
     tmp_path = local.tmp_path
-    consul_tmp_path = var.consul_tmp_path
+    consul_tmp_path = local.consul_tmp_path
   })
 
   consul_populate_script_lock_file = "${local.consul_tmp_path}/consul_populate.lock"
