@@ -1,5 +1,5 @@
 # Overview
-This terraform module will deploy chef server to one or more servers
+This terraform module will deploy a Chef Infra server
 Supported platform families:
  * Debian
  * SLES
@@ -9,13 +9,54 @@ Supported platform families:
 
 ```hcl
 
-module "chef_server" {
+locals {
+
+  addons = {
+    "manage" = {
+      "config" = "",
+      "channel" = "stable",
+      "version" = "2.5.16"
+    }
+  }
+
+  chef_server_users = {
+    "jdoe" = {
+      "serveradmin" = true,
+      "first_name"  = "Jane",
+      "last_name"   = "Doe",
+      "email"       = "jdoe@company.com"
+      "password"    = "s)meP@55!"
+    }
+  }
+
+  chef_server_orgs = {
+    "acmecorp" = {
+      "admins" = ["jdoe"],
+      "org_full_name" = "My Company"
+    }
+  }
+}
+
+module "chef_automate_install" {
+  source                   = "srb3/chef-automate/linux"
+  version                  = "0.13.1"
+  ip                       = module.instance["automate"].public_ip[0]
+  ssh_user_name            = module.ami.user
+  ssh_user_private_key     = var.automate_ssh_user_private_key
+  products                 = var.automate_products
+}
+
+module "chef_server_install" {
   source               = "srb3/chef-server/linux"
-  version              = "0.0.13"
-  ips                  = ["172.16.0.23"]
-  instance_count       = 1
-  ssh_user_name        = "ec2-user"
-  ssh_user_private_key = "~/.ssh/id_rsa"
+  version              = "0.13.4"
+  ip                   = module.instance["chef"].public_ip[0]
+  ssh_user_name        = module.ami.user
+  ssh_user_private_key = var.chef_server_ssh_user_private_key
+  addons               = var.chef_server_addons
+  users                = var.chef_server_users
+  orgs                 = var.chef_server_orgs
+  config               = var.chef_frontend_config
+  automate_module      = jsonencode(module.automate_install)
 }
 ```
 
@@ -23,11 +64,11 @@ module "chef_server" {
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|----------|
-|ips|A list of ip addresses where the chef server will be installed|list|[]|no|
-|instance_count|The number of instances being created| integer |0|no|
+|ip|An address where the chef server will be installed|string||yes|
 |ssh_user_name|The ssh user name used to access the ip addresses provided|string||yes|
 |ssh_user_pass|The ssh user password used to access the ip addresses (either ssh_user_pass or ssh_user_private_key needs to be set)|string|""|no|
 |ssh_user_private_key|The ssh user key used to access the ip addresses (either ssh_user_pass or ssh_user_private_key needs to be set)|string|""|no|
+|automate_module|Pass through the module output of the srb/terraform_linux_chef_automate module, to auto populate the data collector token and url|string|""|no|
 |channel|The install channel to use for the chef server package|string|stable|no|
 |install_version|The version of chef server to install|string|12.19.31|no|
 |accept_license|Shall we accept the chef product license|boolean|true|no|
@@ -37,9 +78,9 @@ module "chef_server" {
 |config_block|Extra config passed in the form of a map (used for chef ha cluster)|map|{}|no|
 |addons|Any addons to be installed should be included in this map|map|{}|no|
 |supermarket_url|Use this to configure the chef server to talk to a supermarket instance|string|""|no|
-|fqdns|A list of fully qualified host names to apply to each chef server being created|list|[]|no|
-|certs|A list of ssl certificates to apply to each chef server|list|[]|no|
-|cert_keys|A list of ssl private keys to apply to each chef server|list|[]|no|
+|fqdn|A fully qualified host name to apply to the chef server being created|string|""|no|
+|cert|An ssl certificates to apply to the chef server|string|""|no|
+|cert_key|An ssl private keys to apply to the chef server|string|""|no|
 |users|A map of users to be added to the chef server and their details|map|{}|no|
 |orgs|A map of organisations to be added to the chef server|map|{}|no|
 |frontend_secrets|A list of secrets to apply to each frontend; for use in a HA cluster|list|[]|no|

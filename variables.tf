@@ -27,32 +27,12 @@ variable "timeout" {
   default     = "5m"
 }
 
-#################### starter pack #################
-
-variable "starter_pack_knife_rb_path" {
-  description = "Internal value for creating a knife.rb"
-  type        = string
-  default     = "/var/tmp/knife.rb"
-}
-
-variable "starter_pack_location" {
-  description = "Internal value for creating a starter pack"
-  type        = string
-  default     = "/var/tmp/chef-starter-pack.tar.gz"
-}
-
-variable "tmp_path" {
-  description = "A path to use for installation scripts"
-  type        = string
-  default     = "/var/tmp"
-}
-
 ############ policyfile_module ##################
 
 variable "cookbooks" {
   description = "the cookbooks used to deploy chef server"
   default     = {
-    "chef_server_wrapper" = "github: 'srb3/chef_server_wrapper', tag: 'v0.1.47'",
+    "chef_server_wrapper" = "github: 'srb3/chef_server_wrapper', tag: 'v0.1.48'",
     "chef-ingredient"     = "github: 'chef-cookbooks/chef-ingredient', tag: 'v3.1.1'"
   }
 }
@@ -144,7 +124,7 @@ variable "cert" {
 }
 
 variable "cert_key" {
-  description = "An ssl private key to apply to each chef server"
+  description = "An ssl private key to apply to the chef server"
   type        = string
   default     = ""
 }
@@ -183,4 +163,12 @@ variable "force_run" {
   description = "Set to anything other than default to force a rerun of provisioning on all servers"
   type        = string
   default     = "default"
+}
+
+############ consul settings #####################
+
+variable "consul_datacenter" {
+  description = "The name of the datacenter to use for consul"
+  type        = string
+  default     = "dc1"
 }

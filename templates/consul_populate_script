@@ -1,0 +1,18 @@
+#!/bin/bash
+set -eux
+
+exec > ${consul_tmp_path}/consul_populate.log 2>&1
+
+sleep 10
+
+
+curl -XPUT http://localhost:8500/v1/kv/chef-server-details -d "$(echo "$(bash ${tmp_path}/chef_server_details.sh)")"
+curl -XPUT http://localhost:8500/v1/kv/frontend-secrets -d "$(echo "$(bash ${tmp_path}/frontend_secrets.sh)")"
+
+if [ -f /etc/opscode/oc-id-applications/supermarket.json ]; then
+  curl -XPUT http://localhost:8500/v1/kv/supermarket -d "$(cat /etc/opscode/oc-id-applications/supermarket.json | jq 'del(.scopes)')"
+else
+  curl -XPUT http://localhost:8500/v1/kv/supermarket -d '{"name":"","uid":"","secret":"","redirect_uri":""}'
+fi
+
+touch  "${tmp_path}/consul_populate.lock"

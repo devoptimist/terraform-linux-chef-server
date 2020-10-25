@@ -1,16 +1,21 @@
 locals {
   starter_pack_user = length(keys(var.orgs)) != 0 ? var.orgs[keys(var.orgs)[0]]["admins"][0] : ""
   starter_pack_org  = length(keys(var.orgs)) != 0 ? keys(var.orgs)[0] : ""
-  script            = templatefile("${path.module}/templates/starter_kit.sh", {
-    starter_pack_user          = local.starter_pack_user,
-    starter_pack_org           = local.starter_pack_org,
-    starter_pack_knife_rb_path = var.starter_pack_knife_rb_path,
-    ssh_user_name              = var.ssh_user_name,
-    starter_pack_location      = var.starter_pack_location
+  consul_policyfile_name = "consul"
+
+  tmp_path = "${var.tmp_path}/${var.policyfile_name}"
+  consul_tmp_path = "${var.tmp_path}/${local.consul_policyfile_name}"
+
+  consul_populate_script = templatefile("${path.module}/templates/consul_populate_script", {
+    tmp_path = local.tmp_path
+    consul_tmp_path = var.consul_tmp_path
   })
+
+  consul_populate_script_lock_file = "${local.consul_tmp_path}/consul_populate.lock"
+
   code = var.automate_module != "" ? var.automate_module : jsonencode({"data_collector_url" = var.data_collector_url, "data_collector_token" = var.data_collector_token})
 
-  data_collector_url = jsondecode(local.code)["data_collector_url"]
+  data_collector_url = jsondecode(local.code)["data_collector_url"][0]
   data_collector_token = jsondecode(local.code)["data_collector_token"]
 
   dna = {
@@ -30,7 +35,7 @@ locals {
       "starter_pack_org"      = local.starter_pack_org,
       "chef_users"            = var.users,
       "chef_orgs"             = var.orgs,
-      "tmp_path"              = var.tmp_path,
+      "tmp_path"              = local.tmp_path,
       "force"                 = var.force_run
       "data_collector_url"   = local.data_collector_url,
       "data_collector_token" = local.data_collector_token,
@@ -54,64 +59,53 @@ module "chef_server_build" {
   timeout          = var.timeout
 }
 
-data "external" "supermarket_details" {
-  program = ["bash", "${path.module}/files/supermarket_data_source.sh"]
-  depends_on = [module.chef_server_build]
+module "consul" {
+  source                    = "srb3/consul/util"
+  version                   = "0.13.0"
+  ip                        = var.ip
+  user_name                 = var.ssh_user_name
+  user_private_key          = var.ssh_user_private_key
+  populate_script           = local.consul_populate_script
+  populate_script_lock_file = local.consul_populate_script_lock_file
+  datacenter                = var.consul_datacenter
+  linux_tmp_path            = var.tmp_path
+  policyfile_name           = local.consul_policyfile_name
+  depends_on                = [module.chef_server_build]
+}
 
-  query = {
-    ssh_user              = var.ssh_user_name
-    ssh_key               = var.ssh_user_private_key
-    ssh_pass              = var.ssh_user_pass
-    chef_server_ip        = var.ip
+provider "consul" {
+  address = "${var.ip}:8500"
+}
+
+data "consul_keys" "chef_server_details" {
+  depends_on = [module.consul]
+  datacenter = var.consul_datacenter
+  key {
+    name = "data"
+    path = "chef-server-details"
   }
 }
 
-resource "null_resource" "starter_pack" {
-  count = length(keys(var.users)) != 0 && length(keys(var.orgs)) != 0 ? 1 : 0
-
-  connection {
-    user        = var.ssh_user_name
-    password    = var.ssh_user_pass
-    private_key = var.ssh_user_private_key != "" ? file(var.ssh_user_private_key) : null
-    host        = var.ip
-    timeout     = var.timeout
-  }
-
-  provisioner "file" {
-    content     = local.script
-    destination = "${var.tmp_path}/starter_kit.sh"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "sudo bash ${var.tmp_path}/starter_kit.sh"
-    ]
-  }
-  depends_on = [module.chef_server_build]
-}
-
-data "external" "chef_server_details" {
-  program = ["bash", "${path.module}/files/data_source.sh"]
-  depends_on = [module.chef_server_build]
-
-  query = {
-    ssh_user      = var.ssh_user_name
-    ssh_key       = var.ssh_user_private_key
-    ssh_pass      = var.ssh_user_pass
-    target_ip     = var.ip
-    target_script = var.data_source_script_path
+data "consul_keys" "frontend_secrets" {
+  depends_on = [module.consul]
+  datacenter = var.consul_datacenter
+  key {
+    name = "data"
+    path = "frontend-secrets"
   }
 }
 
-data "external" "frontend_secret_output" {
-  program = ["bash", "${path.module}/files/data_source.sh"]
-  depends_on = [module.chef_server_build]
-
-  query = {
-    ssh_user      = var.ssh_user_name
-    ssh_key       = var.ssh_user_private_key
-    ssh_pass      = var.ssh_user_pass
-    target_ip     = var.ip
-    target_script = var.frontend_script_path
+data "consul_keys" "supermarket_details" {
+  depends_on = [module.consul]
+  datacenter = var.consul_datacenter
+  key {
+    name = "data"
+    path = "supermarket"
   }
+}
+
+locals {
+  chef_server_details = jsondecode(data.consul_keys.chef_server_details.var.data)
+  frontend_secrets = jsondecode(data.consul_keys.frontend_secrets.var.data)
+  supermarket_details = jsondecode(data.consul_keys.supermarket_details.var.data)
 }
