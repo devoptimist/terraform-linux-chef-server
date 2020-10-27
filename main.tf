@@ -6,22 +6,22 @@ locals {
   tmp_path = "${var.tmp_path}/${var.policyfile_name}"
   consul_tmp_path = "${var.tmp_path}/${local.consul_policyfile_name}"
 
-  consul_populate_script = templatefile("${path.module}/templates/consul_populate_script", {
-    tmp_path = local.tmp_path
-    consul_tmp_path = local.consul_tmp_path
-  })
-
   consul_populate_script_lock_file = "${local.consul_tmp_path}/consul_populate.lock"
+
+  consul_populate_script = templatefile("${path.module}/templates/consul_populate_script", {
+    tmp_path        = local.tmp_path
+    consul_tmp_path = local.consul_tmp_path
+    consul_port     = var.consul_port
+    lock_file       = local.consul_populate_script_lock_file
+  })
 
   code = var.automate_module != "" ? var.automate_module : jsonencode({"data_collector_url" = var.data_collector_url, "data_collector_token" = var.data_collector_token})
 
-  data_collector_url = jsondecode(local.code)["data_collector_url"][0]
+  data_collector_url = jsondecode(local.code)["data_collector_url"]
   data_collector_token = jsondecode(local.code)["data_collector_token"]
 
   dna = {
     "chef_server_wrapper" = {
-      "details_script_path"   = var.data_source_script_path,
-      "frontend_script_path"  = var.frontend_script_path,
       "channel"               = var.channel,
       "version"               = var.install_version,
       "accept_license"        = var.accept_license,
@@ -61,7 +61,7 @@ module "chef_server_build" {
 
 module "consul" {
   source                    = "srb3/consul/util"
-  version                   = "0.13.0"
+  version                   = "0.13.3"
   ip                        = var.ip
   user_name                 = var.ssh_user_name
   user_private_key          = var.ssh_user_private_key
@@ -70,11 +70,13 @@ module "consul" {
   datacenter                = var.consul_datacenter
   linux_tmp_path            = var.tmp_path
   policyfile_name           = local.consul_policyfile_name
+  port                      = var.consul_port
+  log_level                 = var.consul_log_level
   depends_on                = [module.chef_server_build]
 }
 
 provider "consul" {
-  address = "${var.ip}:8500"
+  address = "${var.ip}:${var.consul_port}"
 }
 
 data "consul_keys" "chef_server_details" {
@@ -87,7 +89,7 @@ data "consul_keys" "chef_server_details" {
 }
 
 data "consul_keys" "frontend_secrets" {
-  depends_on = [module.consul]
+  depends_on = [data.consul_keys.chef_server_details]
   datacenter = var.consul_datacenter
   key {
     name = "data"
@@ -96,7 +98,7 @@ data "consul_keys" "frontend_secrets" {
 }
 
 data "consul_keys" "supermarket_details" {
-  depends_on = [module.consul]
+  depends_on = [data.consul_keys.frontend_secrets]
   datacenter = var.consul_datacenter
   key {
     name = "data"

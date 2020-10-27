@@ -1,0 +1,18 @@
+---
+name: default
+inputs:
+  - name: node_name
+    description: the name of the user created in chef server
+    type: string
+  - name: org_url
+    description: the url for an organisation in chef server 
+    type: string
+  - name: private_ip
+    description: the private ip address of the chef server
+    type: string
+  - name: expected_node_name
+    description: the expected name of the user created in chef server
+    type: string
+  - name: expect_org_name
+    description: the expected org name created in the chef server
+    type: string

@@ -30,3 +30,8 @@ Policyfile.lock.json
 terraform.tfvars
 terraform.tfstate*
 .terraform*
+examples/*/terraform.tfvars
+test/fixtures/*/terraform.tfvars
+test/fixtures/*/.terraform
+test/fixtures/*/terraform.tfstate*
+test/fixtures/*/terraform.tfstate.d/*

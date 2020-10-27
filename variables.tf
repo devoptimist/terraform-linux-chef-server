@@ -141,18 +141,6 @@ variable "orgs" {
   default     = {}
 }
 
-variable "data_source_script_path" {
-  description = "The location data source script used to gather chef server details"
-  type        = string
-  default     = "/var/tmp/chef_server_details.sh"
-}
-
-variable "frontend_script_path" {
-  description = "The location data source script used to gather frontend secrets from a bootstrapped frontend"
-  type        = string
-  default     = "/var/tmp/frontend_secrets.sh"
-}
-
 variable "frontend_secrets" {
   description = "A list of secrets to apply to each frontend; for use in a HA cluster"
   type        = list
@@ -177,4 +165,16 @@ variable "consul_datacenter" {
   description = "The name of the datacenter to use for consul"
   type        = string
   default     = "dc1"
+}
+
+variable "consul_port" {
+  description = "The port number to use for consul"
+  type        = string
+  default     = "8500"
+}
+
+variable "consul_log_level" {
+  description = "The log level to run the consul service as"
+  type        = string
+  default     = "info"
 }

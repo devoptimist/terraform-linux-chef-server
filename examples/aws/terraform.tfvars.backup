@@ -1,0 +1,9 @@
+aws_region     = ""
+aws_profile    = ""
+aws_creds_file = ""
+aws_key_name   = ""
+
+chef_server_ingress_cidrs         = []
+chef_server_ssh_user_private_key  = ""
+
+tags = {}
