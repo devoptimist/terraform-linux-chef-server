@@ -75,39 +75,32 @@ module "consul" {
   depends_on                = [module.chef_server_build]
 }
 
-provider "consul" {
-  address = "${var.ip}:${var.consul_port}"
-}
-
-data "consul_keys" "chef_server_details" {
+data "http" "chef_server_details" {
+  url = "http://${var.ip}:${var.consul_port}/v1/kv/chef-server-details?raw"
+  request_headers = {
+    Accept = "application/json"
+  }
   depends_on = [module.consul]
-  datacenter = var.consul_datacenter
-  key {
-    name = "data"
-    path = "chef-server-details"
-  }
 }
 
-data "consul_keys" "frontend_secrets" {
-  depends_on = [data.consul_keys.chef_server_details]
-  datacenter = var.consul_datacenter
-  key {
-    name = "data"
-    path = "frontend-secrets"
+data "http" "frontend_secrets" {
+  url = "http://${var.ip}:${var.consul_port}/v1/kv/frontend-secrets?raw"
+  request_headers = {
+    Accept = "application/json"
   }
+  depends_on = [data.http.chef_server_details]
 }
 
-data "consul_keys" "supermarket_details" {
-  depends_on = [data.consul_keys.frontend_secrets]
-  datacenter = var.consul_datacenter
-  key {
-    name = "data"
-    path = "supermarket"
+data "http" "supermarket_details" {
+  url = "http://${var.ip}:${var.consul_port}/v1/kv/supermarket?raw"
+  request_headers = {
+    Accept = "application/json"
   }
+  depends_on = [data.http.frontend_secrets]
 }
 
 locals {
-  chef_server_details = jsondecode(data.consul_keys.chef_server_details.var.data)
-  frontend_secrets = jsondecode(data.consul_keys.frontend_secrets.var.data)
-  supermarket_details = jsondecode(data.consul_keys.supermarket_details.var.data)
+  chef_server_details = jsondecode(data.http.chef_server_details.body)
+  frontend_secrets = jsondecode(data.http.frontend_secrets.body)
+  supermarket_details = jsondecode(data.http.supermarket_details.body)
 }

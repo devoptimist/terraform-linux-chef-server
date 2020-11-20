@@ -120,7 +120,7 @@ EOF
 module "vpc" {
   source         = "srb3/vpc/aws"
   version        = "0.13.0"
-  name           = "Automate and Squid vpc"
+  name           = "Chef Server VPC"
   cidr           = "10.0.0.0/16"
   azs            = local.azs
   public_subnets = local.public_subnets
