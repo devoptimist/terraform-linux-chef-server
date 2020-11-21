@@ -61,7 +61,7 @@ module "chef_server_build" {
 
 module "consul" {
   source                    = "srb3/consul/util"
-  version                   = "0.13.3"
+  version                   = "0.13.4"
   ip                        = var.ip
   user_name                 = var.ssh_user_name
   user_private_key          = var.ssh_user_private_key
