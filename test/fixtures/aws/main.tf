@@ -11,14 +11,14 @@ locals {
 
   chef_server_orgs = {
     "acmecorp" = {
-      "admins" = ["jdoe"],
+      "admins"        = ["jdoe"],
       "org_full_name" = "My Company"
     }
   }
 }
 
 module "aws_chef_server" {
-  source = "../../../examples/aws"
+  source                           = "../../../examples/aws"
   aws_region                       = var.aws_region
   aws_profile                      = var.aws_profile
   aws_creds_file                   = var.aws_creds_file

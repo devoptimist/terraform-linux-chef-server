@@ -39,13 +39,13 @@ variable "chef_server_ssh_user_private_key" {
 
 variable "chef_server_users" {
   description = "A map of chef users to create on the system"
-  type        = map(object({ serveradmin=bool, first_name=string, last_name=string, email=string, password=string }))
+  type        = map(object({ serveradmin = bool, first_name = string, last_name = string, email = string, password = string }))
   default     = {}
 }
 
 variable "chef_server_orgs" {
   description = "A map of organisations to be added to the chef server"
-  type        = map(object({ admins=list(string), org_full_name=string }))
+  type        = map(object({ admins = list(string), org_full_name = string }))
   default     = {}
 }
 
@@ -69,15 +69,15 @@ resource "random_id" "hash" {
 
 locals {
   public_subnets = ["10.0.1.0/24"]
-  azs            = [
-                     data.aws_availability_zones.available.names[0],
-                     data.aws_availability_zones.available.names[1]
-                   ]
+  azs = [
+    data.aws_availability_zones.available.names[0],
+    data.aws_availability_zones.available.names[1]
+  ]
   chef_server_ingress_rules = ["ssh-tcp", "http-80-tcp", "https-443-tcp", "consul-webui-tcp"]
-  chef_server_egress_rules = ["all-all"]
-  chef_server_egress_cidrs = ["0.0.0.0/0"]
+  chef_server_egress_rules  = ["all-all"]
+  chef_server_egress_cidrs  = ["0.0.0.0/0"]
   chef_server_instance_type = "t3.large"
-  chef_server_rbd = [{ volume_type = "gp2", volume_size = "40" }]
+  chef_server_rbd           = [{ volume_type = "gp2", volume_size = "40" }]
 
   sg_data = {
     "chef" = {
@@ -108,7 +108,7 @@ EOF
 
   chef_server_addons = {
     "manage" = {
-      "config" = "",
+      "config"  = "",
       "channel" = "stable",
       "version" = "2.5.16"
     }
@@ -152,7 +152,7 @@ module "instance" {
   security_group_ids          = each.value["security_group_ids"]
   subnet_ids                  = each.value["subnet_ids"]
   root_block_device           = each.value["root_block_device"]
-  associate_public_ip_address = each.value["public_ip_address"] 
+  associate_public_ip_address = each.value["public_ip_address"]
   tags                        = var.tags
 }
 

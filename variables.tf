@@ -5,7 +5,7 @@ variable "ip" {
 }
 
 variable "ssh_user_name" {
-  description = "The ssh user name used to access the ip addresses provided" 
+  description = "The ssh user name used to access the ip addresses provided"
   type        = string
 }
 
@@ -31,7 +31,7 @@ variable "timeout" {
 
 variable "cookbooks" {
   description = "the cookbooks used to deploy chef server"
-  default     = {
+  default = {
     "chef_server_wrapper" = "github: 'srb3/chef_server_wrapper', tag: 'v0.1.50'",
     "chef-ingredient"     = "github: 'chef-cookbooks/chef-ingredient', tag: 'v3.2.0'"
   }
@@ -131,13 +131,13 @@ variable "cert_key" {
 
 variable "users" {
   description = "A map of users to be added to the chef server and their details"
-  type        = map(object({ serveradmin=bool, first_name=string, last_name=string, email=string, password=string }))
+  type        = map(object({ serveradmin = bool, first_name = string, last_name = string, email = string, password = string }))
   default     = {}
 }
 
 variable "orgs" {
   description = "A map of organisations to be added to the chef server"
-  type        = map(object({ admins=list(string), org_full_name=string }))
+  type        = map(object({ admins = list(string), org_full_name = string }))
   default     = {}
 }
 
