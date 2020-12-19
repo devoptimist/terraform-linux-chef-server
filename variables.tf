@@ -143,8 +143,8 @@ variable "orgs" {
 
 variable "frontend_secrets" {
   description = "A list of secrets to apply to each frontend; for use in a HA cluster"
-  type        = list
-  default     = []
+  type        = map
+  default     = {}
 }
 
 variable "force_run" {

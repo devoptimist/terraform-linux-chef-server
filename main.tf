@@ -40,7 +40,7 @@ locals {
       "data_collector_url"   = local.data_collector_url,
       "data_collector_token" = local.data_collector_token,
       "config_block"         = length(keys(var.config_block)) != 0 ? var.config_block : {},
-      "frontend_secrets"     = length(var.frontend_secrets) != 0 ? element(var.frontend_secrets, 0) : null
+      "frontend_secrets"     = length(var.frontend_secrets) != 0 ? var.frontend_secrets : null
     }
   }
 }
